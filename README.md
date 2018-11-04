@@ -1,0 +1,1 @@
+# portainer-aws-ecr-credentials
