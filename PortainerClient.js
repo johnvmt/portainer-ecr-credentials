@@ -53,8 +53,6 @@ class PortainerClient {
 				requestParams.headers = requestHeaders;
 
 			request(requestParams, function(error, response, body) {
-				console.log(error, body);
-
 				if(error)
 					reject(error);
 				else if(response && response.statusCode === 200)

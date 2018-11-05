@@ -1,6 +1,6 @@
 {
   "name": "portainer-aws-ecr-credentials",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
     "request": "2.88.x",
     "aws-sdk": "2.348.x"
