@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const PortainerClient = require('./PortainerClient');
+const PortainerClient = require('portainer-api-client');
 
 const requiredEnvVars = [
 	'AWS_ACCESS_KEY_ID',
@@ -69,14 +69,14 @@ async function updateCredentials() {
 					Password: awsCredentials.password
 				};
 
-				await portainer.callApiWithKey('POST', '/api/registries', registry);
+				resolve(await portainer.callApiWithKey('POST', '/api/registries', registry));
 			}
 			else {
 				// get new password here
 				registry.Username = awsCredentials.username;
 				registry.Password = awsCredentials.password;
 
-				await portainer.callApiWithKey('PUT', '/api/registries/' + registry.Id, registry);
+				resolve(await portainer.callApiWithKey('PUT', '/api/registries/' + registry.Id, registry));
 			}
 		}
 		catch(error) {
@@ -96,7 +96,7 @@ async function ecrAuthorizationToken() {
 				try {
 					let authorizationData = data.authorizationData[0];
 
-					let authorizationTokenDecoded = new Buffer(authorizationData.authorizationToken, 'base64').toString();
+					let authorizationTokenDecoded = Buffer.from(authorizationData.authorizationToken, 'base64').toString();
 					let authorizationParts = authorizationTokenDecoded.split(':');
 					resolve({
 						username: authorizationParts[0],
