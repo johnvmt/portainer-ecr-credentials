@@ -42,8 +42,8 @@ setInterval(updateCredentialsAndLog, 11 * 3600 * 1000); // Update every 11 hours
 
 async function updateCredentialsAndLog() {
 	try {
-		let result = await updateCredentials();
-		console.log(new Date(), "Update successful", result);
+		await updateCredentials();
+		console.log(new Date(), "Update successful");
 	}
 	catch(error) {
 		console.error(new Date(), "Update error", error);

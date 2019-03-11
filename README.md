@@ -28,6 +28,10 @@ The registry URI is in the format \<registry ID>.dkr.ecr.\<AWS region>.amazonaws
 
 ## What's New
 
+### v0.0.5
+
+- Removed unnecessary logging
+
 ### v0.0.4
 
 - Added Type property in Portainer registry config
