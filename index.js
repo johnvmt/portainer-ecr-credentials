@@ -40,49 +40,44 @@ const portainer = new PortainerClient(portainerUrl, portainerUsername, portainer
 updateCredentialsAndLog();
 setInterval(updateCredentialsAndLog, 11 * 3600 * 1000); // Update every 11 hours
 
-function updateCredentialsAndLog() {
-	updateCredentials()
-	.then(function(result) {
-		console.log(new Date(), "Update successful");
-	})
-	.catch(function(error) {
+async function updateCredentialsAndLog() {
+	try {
+		let result = await updateCredentials();
+		console.log(new Date(), "Update successful", result);
+	}
+	catch(error) {
 		console.error(new Date(), "Update error", error);
-	});
+	}
 }
 
 async function updateCredentials() {
-	return new Promise(async function(resolve, reject) {
-		try {
-			let registries = await portainer.callApiWithKey('get', '/api/registries');
-			let awsCredentials = await ecrAuthorizationToken();
+	let registries = await portainer.callApiWithKey('get', '/api/registries');
 
-			let registry = registries.filter(function(registry) {
-				return registry.URL.toLowerCase() === registryUrl.toLowerCase();
-			})[0];
+	let awsCredentials = await ecrAuthorizationToken();
 
-			if(typeof registry === 'undefined') {
-				registry = {
-					Name: 'ECR-' + registryId,
-					URL: registryUrl,
-					Authentication: true,
-					Username: awsCredentials.username,
-					Password: awsCredentials.password
-				};
+	let registry = registries.filter(function(registry) {
+		return registry.URL.toLowerCase() === registryUrl.toLowerCase();
+	})[0];
 
-				resolve(await portainer.callApiWithKey('POST', '/api/registries', registry));
-			}
-			else {
-				// get new password here
-				registry.Username = awsCredentials.username;
-				registry.Password = awsCredentials.password;
+	if(typeof registry === 'undefined') {
+		registry = {
+			Name: 'ECR-' + registryId,
+			URL: registryUrl,
+			Authentication: true,
+			Username: awsCredentials.username,
+			Password: awsCredentials.password,
+			Type: 1
+		};
 
-				resolve(await portainer.callApiWithKey('PUT', '/api/registries/' + registry.Id, registry));
-			}
-		}
-		catch(error) {
-			reject(error);
-		}
-	});
+		return await portainer.callApiWithKey('POST', '/api/registries', registry);
+	}
+	else {
+		// get new password here
+		registry.Username = awsCredentials.username;
+		registry.Password = awsCredentials.password;
+
+		return await portainer.callApiWithKey('PUT', '/api/registries/' + registry.Id, registry);
+	}
 }
 
 async function ecrAuthorizationToken() {

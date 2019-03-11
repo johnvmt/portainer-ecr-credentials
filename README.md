@@ -25,3 +25,11 @@ The registry URI is in the format \<registry ID>.dkr.ecr.\<AWS region>.amazonaws
 - PORTAINER_URL
 - PORTAINER_USERNAME
 - PORTAINER_PASSWORD
+
+## What's New
+
+### v0.0.4
+
+- Added Type property in Portainer registry config
+- Compatible with Portainer 1.20
+- Minor code style changes
