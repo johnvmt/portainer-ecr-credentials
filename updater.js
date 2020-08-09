@@ -1,5 +1,5 @@
-const AWS = require('aws-sdk');
-const PortainerClient = require('portainer-api-client');
+import AWS from 'aws-sdk';
+import PortainerClient from 'portainer-api-client';
 
 const requiredEnvVars = [
 	'AWS_ACCESS_KEY_ID',
@@ -13,17 +13,18 @@ const requiredEnvVars = [
 
 requiredEnvVars.forEach(function(requiredEnvVar) {
 	if(typeof process.env[requiredEnvVar] !== 'string')
-		throw new Error('Missing required Environment Variable "' + requiredEnvVar + '"');
+		throw new Error(`Missing required Environment Variable "${requiredEnvVar}"`);
 });
 
+const portainerUrl = process.env.PORTAINER_URL;
+const portainerUsername = process.env.PORTAINER_USERNAME;
+const portainerPassword = process.env.PORTAINER_PASSWORD;
 const registryId = process.env.REGISTRY_ID;
 const awsAccessKeyId = process.env.AWS_ACCESS_KEY_ID;
 const awsSecretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 const awsRegion = process.env.AWS_REGION;
 const registryUrl = registryId + '.dkr.ecr.' + awsRegion + '.amazonaws.com';
-const portainerUrl = process.env.PORTAINER_URL;
-const portainerUsername = process.env.PORTAINER_USERNAME;
-const portainerPassword = process.env.PORTAINER_PASSWORD;
+const registryName = process.env.hasOwnProperty('REGISTRY_NAME') ? process.env.REGISTRY_NAME : 'ECR-' + registryId;
 
 AWS.config.update({
 	accessKeyId: awsAccessKeyId,
@@ -61,7 +62,7 @@ async function updateCredentials() {
 
 	if(typeof registry === 'undefined') {
 		registry = {
-			Name: 'ECR-' + registryId,
+			Name: registryName,
 			URL: registryUrl,
 			Authentication: true,
 			Username: awsCredentials.username,

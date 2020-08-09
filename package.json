@@ -1,12 +1,13 @@
 {
   "name": "portainer-aws-ecr-credentials",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "dependencies": {
-    "portainer-api-client": "0.0.x",
-    "aws-sdk": "2.348.x"
+    "portainer-api-client": "^0.0.2",
+    "aws-sdk": "^2.729.0",
+    "esm": "^3.2.25"
   },
   "scripts": {
-    "start": "node index.js",
-    "test-dist": "tar -cvf portainer-ecr-credentials.tar Dockerfile package.json index.js README.md"
+    "start": "node -r esm updater.js",
+    "tar": "tar -cvf portainer-ecr-credentials.tar Dockerfile package.json updater.js README.md"
   }
 }
